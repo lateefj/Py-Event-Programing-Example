@@ -21,6 +21,5 @@ DELETE_PROFILE_FIELD = 'user:4'
 DELETE_USER = 'user:5'
 """Remove a user from the system {id:123}"""
 
-
 USER_ONLINE = 'user:6'
 """Marker that the user was online at some point {id:123, timestamp:234234}"""

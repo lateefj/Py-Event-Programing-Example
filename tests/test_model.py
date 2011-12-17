@@ -31,4 +31,12 @@ class TestUser(unittest.TestCase):
                 TestUser.id, u.id)
         assert u.name == TestUser.name
 
-
+    def test_change_name(self):
+        self.test_new_user()
+        new_name = 'bar'
+        e = ZVent(ztype=events.CHANGE_USER_NAME, data={'id':TestUser.id, 
+            'new_name':new_name})
+        ZVent.publish(e)
+        u = User()
+        u.load(TestUser.id)
+        assert u.name == new_name

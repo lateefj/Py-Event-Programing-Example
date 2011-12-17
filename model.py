@@ -66,9 +66,12 @@ class User:
         """
         id = e.data['id']
         l = self.get_events(id)
-        l.append(e.jsonify())
+        nl = []
+        for le in l:
+            nl.append(le.jsonify())
+        nl.append(e.jsonify())
         f = open(self.path(id), 'w')
-        f.write(dumps(l))
+        f.write(dumps(nl))
 
     def load(self, id):
         """
@@ -87,7 +90,11 @@ class User:
         self.name = e.data['name']
 
     def change_name(self, e):
-        pass
+        """
+        Simple change in name.
+        """
+        self.name = e.data['new_name']
+
     def change_profile(self, e):
         pass
     def delete_profile_field(self, e):
