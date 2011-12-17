@@ -23,3 +23,13 @@ DELETE_USER = 'user:5'
 
 USER_ONLINE = 'user:6'
 """Marker that the user was online at some point {id:123, timestamp:234234}"""
+
+
+MESG_NEW = 'mesg:1'
+"""Create new message: {432, text:'foo@bar driking', user:123}"""
+
+MESG_UPDATE = 'mesg:2'
+"""Update message: {id:432, text:'foo not at bar', user:123}"""
+
+MESG_DELETE = 'mesg:3'
+"""Delete message: {id:432, user:123}"""
