@@ -33,7 +33,8 @@ class User:
         self.name = None
         self.last_online = None
         self.profile = {}
-
+    
+    ################# Using file system for simplicity #############
     def path(self, id):
         path = '%s/%s.json' % (self.store_path, id)
         return path
@@ -50,10 +51,19 @@ class User:
         return l
 
     def apply(self, e):
+        """
+        The magic here is the mapping we do at the end to associate an
+        event with a method on the object. We could have a big stack
+        of 'if' statments but this is much cleaner.
+        """
         if User.apply_map.has_key(e.ztype):
             User.apply_map[e.ztype](self, e)
 
     def save(self, e): 
+        """
+        Way to save the event besides convertin to JSON this is nothing. Using
+        a JSON document store like Mongo or Riak would rock here.
+        """
         id = e.data['id']
         l = self.get_events(id)
         l.append(e.jsonify())
@@ -61,11 +71,18 @@ class User:
         f.write(dumps(l))
 
     def load(self, id):
+        """
+        Get the event and just reapply them all!
+        """
         l = self.get_events(id)
         for e in l:
             self.apply(e)
 
     def new_user(self, e):
+        """
+        Simple to set the current state of new user since all we have
+        is the id and the name.
+        """
         self.id = e.data['id']
         self.name = e.data['name']
 
@@ -90,11 +107,20 @@ class User:
             }
 
 def handle_user_event(e):
+    """
+    The user event handlers are implemented on the class so 
+    we don't really need much to see here. Basically we need to 
+    do 3 steps:
+        * First load the User object so that it is the current state
+        * Save the event to the datastore
+        * Apply it to update the current state
+    """
     u = User()
     u.load(e.data['id'])
     u.save(e)
     u.apply(e)
 
+# Maps the all events that the User class is handling
 for k in User.apply_map.keys():
     ZVent.register(k, handle_user_event)
 
